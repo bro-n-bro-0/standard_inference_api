@@ -1,3 +1,4 @@
+import time
 from fastapi import FastAPI
 from pydantic import BaseModel
 from service import service
@@ -10,8 +11,13 @@ class Item(BaseModel):
 
 @app.get("/standard_inference")
 async def get_result(particle: str = "not found"):
+    start_time = time.time()
     res = await service(particle)
-    return {"result": res}
+    end_time = time.time()
+    return {
+        "result": res,
+        "time": end_time - start_time
+    }
 
 if __name__ == "__main__":
     import uvicorn
