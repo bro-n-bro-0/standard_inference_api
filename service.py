@@ -24,6 +24,8 @@ async def service(particle: str) -> list:
     client = clickhouse_connect.get_client(host=DB_HOST, port=DB_PORT, user=DB_USER, password=DB_PASSWORD)
     result = client.query(query(particle)).result_set
     result = [r for r in result if r[1] > 1]
+    if not result:
+        return []
     result_df = pd.DataFrame(result, columns=['particle', 'balance'])
     await  fetch_all_ranks(result_df)
     result_df['inference'] = result_df['balance'] * result_df['rank']
